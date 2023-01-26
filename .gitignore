@@ -1,0 +1,7 @@
+.venv
+instance/
+
+*.code-workspace
+
+__pycache__/
+*.py[cod]

@@ -1,0 +1,277 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<style>
+	.rotate-icone{
+		transform: rotateZ(45deg);
+	}
+	.range-width{
+		width: 150%;
+	}
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+<!-- start 4 LDR Values -->
+<div class="row row-card-no-pd">
+	<div class="col-sm-6 col-md-3">
+		<div class="card card-stats card-round">
+			<div class="card-body">
+				<div class="row">
+					<div class="col-5">
+						<div class="icon-big text-center">
+							<i class="icon-arrow-up-circle rotate-icone"></i>
+						</div>
+					</div>
+					<div class="col-7 col-stats">
+						<div class="numbers">
+							<p class="card-category">LDR1</p>
+							<h4 class="card-title ldr-value">0</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6 col-md-3">
+		<div class="card card-stats card-round">
+			<div class="card-body ">
+				<div class="row">
+					<div class="col-5">
+						<div class="icon-big text-center">
+							<i class="icon-arrow-left-circle rotate-icone"></i>
+						</div>
+					</div>
+					<div class="col-7 col-stats">
+						<div class="numbers">
+							<p class="card-category">LDR2</p>
+							<h4 class="card-title ldr-value">0</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6 col-md-3">
+		<div class="card card-stats card-round">
+			<div class="card-body ">
+				<div class="row">
+					<div class="col-5">
+						<div class="icon-big text-center">
+							<i class="icon-arrow-right-circle rotate-icone"></i>
+						</div>
+					</div>
+					<div class="col-7 col-stats">
+						<div class="numbers">
+							<p class="card-category">LDR3</p>
+							<h4 class="card-title ldr-value">0</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6 col-md-3">
+		<div class="card card-stats card-round">
+			<div class="card-body">
+				<div class="row">
+					<div class="col-5">
+						<div class="icon-big text-center">
+							<i class="icon-arrow-down-circle rotate-icone"></i>
+						</div>
+					</div>
+					<div class="col-7 col-stats">
+						<div class="numbers">
+							<p class="card-category">LDR4</p>
+							<h4 class="card-title ldr-value">0</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+<!-- end 4 LDR Values -->
+<!-- 2 card for state of servo motor  -->
+<div class="row">
+	<div class="col-sm-6 col-md-3">
+		<div class="card card-stats card-round">
+			<div class="card-body ">
+				<div class="row">
+					<div class="col-3">
+						<div class="icon-big text-center">
+							<h4 class="cardValue card-title">{{Hposi}}</h4>
+						</div>
+					</div>
+					<div class="col-7 col-stats">
+						<div class="numbers">
+							<p class="card-category">Hori Servo</p>
+
+							<label for="customRange3" class="form-label">0-180°degre</label>
+							<input type="range" class="form-range range-width hori" min="0" max="180" step="1" id="customRange3">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6 col-md-3">
+		<div class="card card-stats card-round">
+			<div class="card-body ">
+				<div class="row">
+					<div class="col-3">
+						<div class="icon-big text-center">
+							<h4 class="cardValue card-title">{{Vposi}}</h4>
+						</div>
+					</div>
+					<div class="col-7 col-stats">
+						<div class="numbers">
+							<p class="card-category">Verti Servo</p>
+
+							<label for="customRange3" class="form-label">0-180°degre</label>
+							<input type="range" class="form-range range-width verti" min="0" max="180" step="1" id="customRange3">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- controel Mode -->
+	<div class="col-sm-6 col-md-3">
+		<div class="card card-stats card-round">
+			<div class="card-body">
+				<div class="row align-items-center">
+					<div class="col-icon">
+						<div class="icon-big text-center icon-secondary bubble-shadow-small">
+							<button id="mode" class="btn btn-secondary"><i class="flaticon-success"></i></button>
+						</div>
+					</div>
+					<div class="col col-stats ml-1 ml-sm-0">
+						<div class="numbers">
+							<p class="card-category">Mode</p>
+						{%  if mode %}
+							<h4 id="currentMode" class="card-title">Automatic</h4>
+						{% else %}
+							<h4 id="currentMode" class="card-title">Manual</h4>
+						{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- controel Mode -->
+</div>
+<!-- end state for serrvo motor -->
+
+
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script src="../../static/assets/js/main.js"></script>
+
+<script>
+	Circles.create({
+		id: 'circles-1',
+		radius: 45,
+		value: 60,
+		maxValue: 100,
+		width: 7,
+		text: 5,
+		colors: ['#f1f1f1', '#FF9E27'],
+		duration: 400,
+		wrpClass: 'circles-wrp',
+		textClass: 'circles-text',
+		styleWrapper: true,
+		styleText: true
+	})
+
+	Circles.create({
+		id: 'circles-2',
+		radius: 45,
+		value: 70,
+		maxValue: 100,
+		width: 7,
+		text: 36,
+		colors: ['#f1f1f1', '#2BB930'],
+		duration: 400,
+		wrpClass: 'circles-wrp',
+		textClass: 'circles-text',
+		styleWrapper: true,
+		styleText: true
+	})
+
+	Circles.create({
+		id: 'circles-3',
+		radius: 45,
+		value: 40,
+		maxValue: 100,
+		width: 7,
+		text: 12,
+		colors: ['#f1f1f1', '#F25961'],
+		duration: 400,
+		wrpClass: 'circles-wrp',
+		textClass: 'circles-text',
+		styleWrapper: true,
+		styleText: true
+	})
+
+	var totalIncomeChart = document.getElementById('totalIncomeChart').getContext('2d');
+
+	var mytotalIncomeChart = new Chart(totalIncomeChart, {
+		type: 'bar',
+		data: {
+			labels: ["S", "M", "T", "W", "T", "F", "S", "S", "M", "T"],
+			datasets: [{
+				label: "Total Income",
+				backgroundColor: '#ff9e27',
+				borderColor: 'rgb(23, 125, 255)',
+				data: [6, 4, 9, 5, 4, 6, 4, 3, 8, 10],
+			}],
+		},
+		options: {
+			responsive: true,
+			maintainAspectRatio: false,
+			legend: {
+				display: false,
+			},
+			scales: {
+				yAxes: [{
+					ticks: {
+						display: false //this will remove only the label
+					},
+					gridLines: {
+						drawBorder: false,
+						display: false
+					}
+				}],
+				xAxes: [{
+					gridLines: {
+						drawBorder: false,
+						display: false
+					}
+				}]
+			},
+		}
+	});
+
+	$('#lineChart').sparkline([105, 103, 123, 100, 95, 105, 115], {
+		type: 'line',
+		height: '70',
+		width: '100%',
+		lineWidth: '2',
+		lineColor: '#ffa534',
+		fillColor: 'rgba(255, 165, 52, .14)'
+	});
+</script>
+
+{% endblock javascripts %}

@@ -1,0 +1,3 @@
+http://127.0.0.1:80/push?ldrtr=10&ldrtl=11&ldrbr=20&ldrbl=21&hposi=90&vposi=91&mode=0
+
+responseString : f"start {mode},{vposi},{hposi} end."   
