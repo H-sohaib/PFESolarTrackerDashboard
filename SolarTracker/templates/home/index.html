@@ -5,10 +5,11 @@
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <style>
-	.rotate-icone{
+	.rotate-icone {
 		transform: rotateZ(45deg);
 	}
-	.range-width{
+
+	.range-width {
 		width: 150%;
 	}
 </style>
@@ -155,11 +156,11 @@
 					<div class="col col-stats ml-1 ml-sm-0">
 						<div class="numbers">
 							<p class="card-category">Mode</p>
-						{%  if mode %}
+							{%  if mode %}
 							<h4 id="currentMode" class="card-title">Automatic</h4>
-						{% else %}
+							{% else %}
 							<h4 id="currentMode" class="card-title">Manual</h4>
-						{% endif %}
+							{% endif %}
 						</div>
 					</div>
 				</div>

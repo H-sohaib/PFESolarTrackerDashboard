@@ -5,6 +5,7 @@ let currentMode = document.querySelector("#currentMode")
 // Switch button for mode 
 modeButton.onclick = () => {
   if (currentMode.innerHTML == "Automatic") {
+    console.log("Manual Mode");
     currentMode.innerHTML = "Manual";
     // fetch update the mode
     fetch(reqURL, {
@@ -20,6 +21,7 @@ modeButton.onclick = () => {
     })
     // end fitch
   } else if (currentMode.innerHTML == "Manual") {
+    console.log("Automatic Mode");
     currentMode.innerHTML = "Automatic";
     // fetch update the mode
     fetch(reqURL, {
@@ -90,7 +92,7 @@ window.onload = () => {
 }
 
 // update and show the LDR Recordes 
-let values = document.querySelectorAll(".ldr-value"); 
+let values = document.querySelectorAll(".ldr-value");
 let interval = 1000;
 setInterval(() => {
   // start fitch 
@@ -99,11 +101,12 @@ setInterval(() => {
     credentials: "include",
     body: JSON.stringify({}),
     cache: "no-cache",
-    headers: new Headers({ "content-type": "application/json" }),
-    
+    headers: new Headers({
+      "content-type": "application/json"
+    }),
+
   }).then((response) => {
     response.json().then((data) => {
-      console.log(data);
       values[0].innerHTML = data.ldrtr;
       values[1].innerHTML = data.ldrtl;
       values[2].innerHTML = data.ldrbr;
