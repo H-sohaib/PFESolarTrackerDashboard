@@ -5,6 +5,16 @@
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <style>
+	#servo {
+		flex-wrap: nowrap;
+		align-items: center;
+		justify-content: center;
+	}
+
+	#moyenne {
+		justify-content: center;
+	}
+
 	.rotate-icone {
 		transform: rotateZ(45deg);
 	}
@@ -98,8 +108,37 @@
 
 </div>
 <!-- end 4 LDR Values -->
+<!-- start Myenne value of top and down -->
+<div id="moyenne" class="row">
+
+	<div class="col-6 col-sm-4 col-lg-2">
+		<div class="card">
+			<div class="card-body p-3 text-center">
+				<div class="text-right text-success">
+					<i class="fas fa-arrows-alt-v"></i>
+				</div>
+				<div class="h1 m-0 moyenne"> 0 </div>
+				<div class="text-muted mb-3">Vertical Error</div>
+			</div>
+		</div>
+	</div>
+	<!-- ************ -->
+	<div class="col-6 col-sm-4 col-lg-2">
+		<div class="card">
+			<div class="card-body p-3 text-center">
+				<div class="text-right text-danger">
+					<i class="fas fa-arrows-alt-h"></i>
+				</div>
+				<div class="h1 m-0 moyenne">0</div>
+				<div class="text-muted mb-3">Horizontal Error</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+<!-- start Myenne value of top and down -->
 <!-- 2 card for state of servo motor  -->
-<div class="row">
+<div id="servo" class="row">
 	<div class="col-sm-6 col-md-3">
 		<div class="card card-stats card-round">
 			<div class="card-body ">

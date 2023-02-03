@@ -92,6 +92,7 @@ window.onload = () => {
 }
 
 // update and show the LDR Recordes 
+let moyennIndicators = document.querySelectorAll(".moyenne")
 let values = document.querySelectorAll(".ldr-value");
 let interval = 1000;
 setInterval(() => {
@@ -111,6 +112,13 @@ setInterval(() => {
       values[1].innerHTML = data.ldrtl;
       values[2].innerHTML = data.ldrbr;
       values[3].innerHTML = data.ldrbl;
+      let left = (data.ldrtl + data.ldrbl) / 2;
+      let right = (data.ldrtr + data.ldrbr) / 2;
+      let top = (data.ldrtr + data.ldrtl) / 2;
+      let bottom = (data.ldrbr + data.ldrbl) / 2;
+      moyennIndicators[0].innerHTML = top - bottom;
+      moyennIndicators[1].innerHTML = right - left;
+
     })
   })
   // end fitch
