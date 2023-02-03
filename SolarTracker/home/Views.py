@@ -2,6 +2,7 @@ from SolarTracker import app, db, firebaseDB
 from flask import request, render_template, url_for, make_response, jsonify
 import time
 from flask_login import login_required, current_user
+import requests
 
 
 @app.route("/push")
@@ -24,6 +25,7 @@ def push():
     except Exception as e:
         print("fail to insert LDR Recorde !!!")
         print(e)
+        return e
     # update Control Object
     try:
         firebaseDB.child("Control").update({
@@ -34,6 +36,7 @@ def push():
     except Exception as e:
         print("fail to update Control Object!!!")
         print(e)
+        return e
     return "done"
 
 
@@ -43,9 +46,10 @@ def get():
     try:
         control = firebaseDB.child("Control").get().val()
         print(control)
-    except Exception as e:
-        print("Fail to get control object check the Connection !!!")
-        print(e)
+    except requests.exceptions.ConnectionError:
+        return "Check Ur connection !!"
+    except requests.exceptions.ConnectTimeout:
+        return "Connection Time Out"
     # send response
     return f'start {control["mode"]},{control["Vposi"]},{control["Hposi"]} end.'
 
@@ -54,8 +58,14 @@ def get():
 @login_required
 def index():
     # control = {"mode" : 0 , "Vposi" :"0" , "Hposi" : "0"}
-    control = firebaseDB.child("Control").get().val()
-# Hundel the fetch request
+    try:
+        control = firebaseDB.child("Control").get().val()
+    except requests.exceptions.ConnectionError:
+        return "Check Ur connection"
+    except requests.exceptions.ConnectTimeout:
+        return "Connection Time Out"
+
+    # Hundel the fetch request
     if request.method == 'POST' and request.is_json:
         print("Hundel fetch Requests !")
         req = request.get_json()
@@ -67,11 +77,13 @@ def index():
                 if key in ["Hposi", "Vposi"]:
                     firebaseDB.child("Control").update(req)
                     print("Position updated")
+
         # update mode
         elif req.get("mode") in [0, 1]:
             print("Update Mode !")
             firebaseDB.child("Control").update(req)
             print("mode updated")
+
         # send last LDR Recorde to dashboard
         if not req:
             print("try send last LDR recorde")
@@ -82,9 +94,10 @@ def index():
                 for rec in data.each():
                     lastRecorde = rec.val()
                 return make_response(jsonify(lastRecorde), 200)
-            except Exception as e:
-                print(e)
-                firebaseDB.child("LDR Recorde")
+            except requests.exceptions.ConnectionError:
+                return "Check Ur connection"
+            except requests.exceptions.ConnectTimeout:
+                return "Connection Time Out"
 
     profile_url = url_for(
         "static", filename='profile/'+current_user.profile)
