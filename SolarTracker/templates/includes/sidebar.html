@@ -1,9 +1,9 @@
 		<!-- Sidebar -->
-		<div class="sidebar sidebar-style-2" data-background-color="dark2">			
+		<div class="sidebar sidebar-style-2" data-background-color="dark2">
 			<div class="sidebar-wrapper scrollbar scrollbar-inner">
 				<div class="sidebar-content">
 
-				{% if current_user.is_authenticated %}	
+					{% if current_user.is_authenticated %}
 					<div class="user">
 						<div class="avatar-sm float-left mr-2">
 							<img src="{{profile_url}}" alt="..." class="avatar-img rounded-circle">
@@ -37,7 +37,7 @@
 						</div>
 					</div>
 
-	
+
 					<ul class="nav nav-primary">
 						<li class="nav-item {% if 'index' in segment %} active {% endif %}">
 							<a data-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false">
@@ -55,8 +55,8 @@
 									</li>
 									<!-- End sub menu -->
 									<li>
-										<a href="{{ url_for('get') }}">
-											<span class="sub-item">Dashboard2</span>
+										<a href="{{ url_for('tables') }}">
+											<span class="sub-item">Tables</span>
 										</a>
 									</li>
 								</ul>
@@ -65,15 +65,14 @@
 
 
 					</ul>
-				{% else %}
+					{% else %}
 					<ul class="nav nav-primary">
 						<li class="mx-4 mt-2">
 							Please <a href="{{ url_for('authentication_blueprint.login') }}">Log in</a>
 						</li>
 					</ul>
-				{% endif %}	
+					{% endif %}
 				</div>
 			</div>
 		</div>
-        <!-- End Sidebar -->
-        
+		<!-- End Sidebar -->
