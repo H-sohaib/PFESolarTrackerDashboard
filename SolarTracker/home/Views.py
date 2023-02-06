@@ -10,7 +10,7 @@ from werkzeug.datastructures import ImmutableMultiDict
 def push():
     # get data from the url variable
     data = request.args.to_dict(flat=True)
-    print(data)
+    # print(data)
     # insert the LDR DATA in firebase
     if data.get("ldrtr"):
         print("push LDR Value !!!")
@@ -32,7 +32,7 @@ def push():
         # update Control Object
         try:
             firebaseDB.child("Control").update({
-                "mode": int(data["mode"]),
+                # "mode": int(data["mode"]),
                 "Hposi": int(data["hposi"]),
                 "Vposi": int(data["vposi"])
             })
@@ -60,7 +60,7 @@ def get():
     # get control child from firebase
     try:
         control = firebaseDB.child("Control").get().val()
-        print(control)
+        # print(control)
     except requests.exceptions.ConnectionError:
         return "Check Ur connection !!"
     except requests.exceptions.ConnectTimeout:
@@ -107,8 +107,12 @@ def index():
                     "LDR Recorde").order_by_key().limit_to_last(1).get()
                 # extracte a dictionnary from the data returned
                 for rec in data.each():
-                    lastRecorde = rec.val()
-                return make_response(jsonify(lastRecorde), 200)
+                    refreshedData = rec.val()
+                refreshedData["Hposi"] = control.get("Hposi")
+                refreshedData["Vposi"] = control.get("Vposi")
+                refreshedData["mode"] = control.get("mode")
+                # print(refreshedData)
+                return make_response(jsonify(refreshedData), 200)
             except requests.exceptions.ConnectionError:
                 return "Check Ur connection"
             except requests.exceptions.ConnectTimeout:
@@ -116,8 +120,7 @@ def index():
 
     profile_url = url_for(
         "static", filename='profile/'+current_user.profile)
-    return render_template('home/index.html', segment='index', profile_url=profile_url,
-                           Vposi=control["Vposi"], Hposi=control["Hposi"], mode=control["mode"])
+    return render_template('home/index.html', segment='index', profile_url=profile_url, mode=control["mode"])
 
 
 @app.route('/index/tables')
