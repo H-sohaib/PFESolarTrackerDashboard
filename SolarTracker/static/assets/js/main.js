@@ -1,3 +1,9 @@
+// positionne slider to current value in db on load of documents
+window.onload = () => {
+  hSlider.value = parseInt(cardValue[0].innerHTML)
+  vSlider.value = parseInt(cardValue[1].innerHTML)
+}
+
 let reqURL = `${window.location.href}`;
 let modeButton = document.querySelector("#mode");
 let currentMode = document.querySelector("#currentMode");
@@ -22,8 +28,9 @@ vSlider.oninput = () => {
 
 // Send slider stat
 range.forEach((r) => {
+  console.log(r);
   r.onchange = () => {
-    if (mode == 0) {
+    if (currentMode.innerHTML == "Manual") {
       console.log("Send slider value !!");
       if (r.classList.contains("hori")) {
         console.log("Hori servo");
@@ -53,11 +60,6 @@ range.forEach((r) => {
   }
 })
 
-// positionne slider to current value in db on load of documents
-window.onload = () => {
-  hSlider.value = parseInt(cardValue[0].innerHTML)
-  vSlider.value = parseInt(cardValue[1].innerHTML)
-}
 
 // elements need refresh without reload -----------*
 // LDR Value & Position Error & Servo position in auto mode

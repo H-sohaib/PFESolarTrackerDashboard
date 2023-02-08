@@ -42,7 +42,7 @@ def push():
             return e
     # insert the Power DATA in firebase
     elif data.get("tension"):
-        print("Push Power value")
+        # print("Push Power value")
 
         try:
             firebaseDB.child("Power").child(
@@ -84,6 +84,7 @@ def index():
     if request.method == 'POST' and request.is_json:
         print("Hundel fetch Requests !")
         req = request.get_json()
+        print(req)
         # update posi from slider value
         if req.get("Hposi") or req.get("Vposi"):
             print("Update servo Posis !")
@@ -95,13 +96,13 @@ def index():
 
         # update mode
         elif req.get("mode") in [0, 1]:
-            print("Update Mode !")
+            # print("Update Mode !")
             firebaseDB.child("Control").update(req)
-            print("mode updated")
+            # print("mode updated")
 
         # send last LDR Recorde to dashboard
         if not req:
-            print("try send last LDR recorde")
+            # print("try send last LDR recorde")
             try:
                 data = firebaseDB.child(
                     "LDR Recorde").order_by_key().limit_to_last(1).get()
