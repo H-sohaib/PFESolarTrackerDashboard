@@ -1,7 +1,7 @@
 // positionne slider to current value in db on load of documents
 window.onload = () => {
-  hSlider.value = parseInt(cardValue[0].innerHTML)
-  vSlider.value = parseInt(cardValue[1].innerHTML)
+  // hSlider.value = parseInt(cardValue[0].innerHTML)
+  // vSlider.value = parseInt(cardValue[1].innerHTML)
 }
 
 let reqURL = `${window.location.href}`;

@@ -4,53 +4,56 @@ import time
 from flask_login import login_required, current_user
 import requests
 from werkzeug.datastructures import ImmutableMultiDict
+ldrRecorde = {
+    "ldrtr": 1,
+    "ldrtl": 1,
+    "ldrbr": 1,
+    "ldrbl": 1
+}
 
 
 @app.route("/push")
 def push():
     # get data from the url variable
-    data = request.args.to_dict(flat=True)
+    data = request.args.to_dict(flat=True)  # data is a dict
     # print(data)
-    # insert the LDR DATA in firebase
-    if data.get("ldrtr"):
-        print("push LDR Value !!!")
-        insertData = {
-            "ldrtr": float(data["ldrtr"]),
-            "ldrtl": float(data["ldrtl"]),
-            "ldrbr": float(data["ldrbr"]),
-            "ldrbl": float(data["ldrbl"])
-        }
-        # record LDR Value
-        recordTime = time.strftime("%d-%m-%Y, %H:%M:%S", time.localtime())
-        try:
-            firebaseDB.child("LDR Recorde").child(
-                recordTime).set(insertData)
-        except Exception as e:
-            print("fail to insert LDR Recorde !!!")
-            print(e)
-            return e
-        # update Control Object
+    if data.__len__() == 2:  # push servo position AUTO_MODE
         try:
             firebaseDB.child("Control").update({
-                # "mode": int(data["mode"]),
-                "Hposi": int(data["hposi"]),
-                "Vposi": int(data["vposi"])
+                "Hposi": int(data.get("hposi")),
+                "Vposi": int(data.get("vposi"))
             })
-        except Exception as e:
-            print("fail to update Control Object!!!")
-            print(e)
-            return e
-    # insert the Power DATA in firebase
-    elif data.get("tension"):
-        # print("Push Power value")
-
-        try:
-            firebaseDB.child("Power").child(
-                time.strftime("%d-%m-%Y", time.localtime())).child(time.strftime("%H:%M:%S", time.localtime())).set(data)
         except requests.exceptions.ConnectionError:
             return "Check Ur connection"
         except requests.exceptions.ConnectTimeout:
             return "Connection Time Out"
+        except Exception as e:
+            print(e)
+            return "unexpected error occurred !!"
+
+    elif data.__len__() > 2:  # push LDR & Power recorde 'OUT of any MODE'
+        # insert Power Recordes
+        try:
+            firebaseDB.child("Power").child(
+                time.strftime("%d-%m-%Y", time.localtime())).child(time.strftime("%H:%M:%S", time.localtime())).set(
+                {"courant": data.get("courant"),
+                 "tension": data.get("tension")})
+        except requests.exceptions.ConnectionError:
+            return "Check Ur connection"
+        except requests.exceptions.ConnectTimeout:
+            return "Connection Time Out"
+        except Exception as e:
+            print(e)
+            return "unexpected error occurred !!"
+        #  LDR Recordes
+        global ldrRecorde
+        ldrRecorde = {
+            "ldrtr": int(data.get("ldrtr")),
+            "ldrtl": int(data.get("ldrtl")),
+            "ldrbr": int(data.get("ldrbr")),
+            "ldrbl": int(data.get("ldrbl"))
+        }
+        print(ldrRecorde)
 
     return "done"
 
@@ -65,6 +68,9 @@ def get():
         return "Check Ur connection !!"
     except requests.exceptions.ConnectTimeout:
         return "Connection Time Out"
+    except Exception as e:
+        print(e)
+        return "unexpected error occurred !!"
     # send response
     return f'start {control["mode"]},{control["Vposi"]},{control["Hposi"]} end.'
 
@@ -79,46 +85,53 @@ def index():
         return "Check Ur connection"
     except requests.exceptions.ConnectTimeout:
         return "Connection Time Out"
+    except Exception as e:
+        print(e)
+        return "unexpected error occurred !!"
 
-    # Hundel the fetch request
+  # # Hundel the fetch request
     if request.method == 'POST' and request.is_json:
-        print("Hundel fetch Requests !")
+        # print("Hundel fetch Requests !")
         req = request.get_json()
-        print(req)
         # update posi from slider value
         if req.get("Hposi") or req.get("Vposi"):
-            print("Update servo Posis !")
             for key, value in req.items():
-                # update servo position
                 if key in ["Hposi", "Vposi"]:
-                    firebaseDB.child("Control").update(req)
-                    print("Position updated")
+                    try:
+                        firebaseDB.child("Control").update(req)
+                        print("Position updated")
+                    except requests.exceptions.ConnectionError:
+                        return "Check Ur connection"
+                    except requests.exceptions.ConnectTimeout:
+                        return "Connection Time Out"
+                    except Exception as e:
+                        print(e)
+                        return "unexpected error occurred !!"
 
         # update mode
         elif req.get("mode") in [0, 1]:
-            # print("Update Mode !")
-            firebaseDB.child("Control").update(req)
-            # print("mode updated")
-
-        # send last LDR Recorde to dashboard
-        if not req:
-            # print("try send last LDR recorde")
+            print("Update Mode !")
             try:
-                data = firebaseDB.child(
-                    "LDR Recorde").order_by_key().limit_to_last(1).get()
-                # extracte a dictionnary from the data returned
-                for rec in data.each():
-                    refreshedData = rec.val()
-                refreshedData["Hposi"] = control.get("Hposi")
-                refreshedData["Vposi"] = control.get("Vposi")
-                refreshedData["mode"] = control.get("mode")
-                # print(refreshedData)
-                return make_response(jsonify(refreshedData), 200)
+                firebaseDB.child("Control").update(req)
+                print("mode updated !")
             except requests.exceptions.ConnectionError:
                 return "Check Ur connection"
             except requests.exceptions.ConnectTimeout:
                 return "Connection Time Out"
+            except Exception as e:
+                print(e)
+                return "unexpected error occurred !!"
 
+        # send last LDR Recorde to dashboard
+        if not req:  # empty json
+            print("try send last LDR recorde")
+            refreshedData = ldrRecorde
+            refreshedData["Hposi"] = control.get("Hposi")
+            refreshedData["Vposi"] = control.get("Vposi")
+            refreshedData["mode"] = control.get("mode")
+            print(refreshedData)
+            return make_response(jsonify(refreshedData), 200)
+    # for the account profile
     profile_url = url_for(
         "static", filename='profile/'+current_user.profile)
     return render_template('home/index.html', segment='index', profile_url=profile_url, mode=control["mode"])
@@ -133,6 +146,9 @@ def tables():
         return "Check Ur connection"
     except requests.exceptions.ConnectTimeout:
         return "Connection Time Out"
+    except Exception as e:
+        print(e)
+        return "unexpected error occurred !!"
 
     print(data)
 #   # for debuging !

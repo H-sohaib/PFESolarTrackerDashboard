@@ -14,8 +14,8 @@
   <script>
     let url;
     setInterval(() => {
-      url =
-        `http://127.0.0.1:80/push?ldrtr=${parseInt(Math.random() * 1023)}&ldrtl=${parseInt(Math.random() * 1023)}&ldrbr=${parseInt(Math.random() * 1023)}&ldrbl=21&hposi=${parseInt(Math.random() * 180)}&vposi=${parseInt(Math.random() * 180)}`
+      // url =`http://100.97.112.62:80/push?ldrtr=${parseInt(Math.random() * 1023)}&ldrtl=${parseInt(Math.random() * 1023)}&ldrbr=${parseInt(Math.random() * 1023)}&ldrbl=21&tension=5.5&courant=30.5`
+      url =  `http://100.97.112.62:80/push?hposi=${parseInt(Math.random() * 1023)}&vposi=${parseInt(Math.random() * 1023)}`
       // console.log( "ldr fetch sended ");
       // start fitch 
       fetch(url, {
